@@ -2,55 +2,58 @@
 
 ## Objective
 
-The objective of the first week was to identify a suitable problem statement for the project and develop an initial understanding of the proposed solution.
+The objective of the first week was to identify and finalize a suitable project problem for the semester project and prepare an initial presentation describing the selected idea.
 
-The idea needed to satisfy three requirements:
+The team evaluated different problem domains and considered factors such as practical relevance, availability of data, technical feasibility, scope for machine learning, and the possibility of developing a complete working system within the project timeline.
 
-* It should address a practical problem.
-* It should provide sufficient scope for software development and machine learning.
-* It should have publicly available data or external sources that could support development and evaluation.
+## Problem Domain Exploration
 
-## Initial Problem Exploration
+The team explored several possible problem areas before selecting the software supply-chain security domain.
 
-The team explored possible problem domains before finalizing the project direction.
+During the discussion, the team focused on the increasing dependence of modern software applications on open-source packages and libraries.
 
-One of the areas considered was **software supply-chain security**. Modern applications depend heavily on open-source libraries and packages. A project may directly use a relatively small number of libraries while indirectly depending on a much larger dependency tree.
+A single application may directly depend on a limited number of packages while indirectly pulling in a much larger number of transitive dependencies.
 
-This creates a security problem because vulnerabilities in a transitive dependency can affect an application even when the developer did not explicitly select that package.
+This creates a potential security problem because vulnerabilities in a transitive dependency can affect the application even when the developer did not explicitly add that dependency.
 
-## Problem Statement
+## Problem Identification
 
-The main problem identified was that developers can receive a large number of dependency vulnerability alerts without having an effective way to determine which dependencies should be addressed first.
+The team identified that simply detecting vulnerabilities is not always sufficient.
 
-A vulnerability list alone does not necessarily represent practical risk.
+A repository can contain multiple vulnerable dependencies, but all vulnerabilities may not have the same practical priority.
 
-For example, two dependencies may both have known vulnerabilities, but their actual priority may differ because:
+For example, risk can depend on factors such as:
 
-* One dependency may be directly used by the application.
-* Another may occur several levels deep in the dependency tree.
-* One package may be actively maintained while another has been stale for several years.
-* One package may have a high-severity vulnerability.
-* One package may have multiple known vulnerabilities.
-* The overall health of the package or its source repository may differ.
+* Vulnerability severity.
+* Number of vulnerabilities associated with a package.
+* Dependency depth.
+* Whether the dependency is direct or transitive.
+* Package age and staleness.
+* Maintenance activity.
+* Repository/project health.
 
-This led to the idea of building a system that performs **risk assessment and prioritization**, rather than simply producing a vulnerability list.
+This led to the idea of developing a system that would not only detect vulnerable dependencies but also **prioritize their risk**.
 
-## Idea Selection
+## Finalized Project Idea
 
-The project idea was finalized as:
+The team finalized the project:
 
 **RiskTrace: An Explainable ML-Based Dependency Risk Assessment and Prioritization Platform for Software Supply Chains**
 
-The intended objective of RiskTrace is to analyze a GitHub repository, identify its direct and transitive dependencies, match those dependencies against vulnerability information, and prioritize the resulting risks.
+The primary objective of RiskTrace is to analyze a GitHub repository, identify its direct and transitive dependencies, detect known vulnerabilities, and generate a prioritized dependency-risk assessment.
 
-The project was also designed to include explainability so that a developer can understand why a dependency received a particular risk score.
+A major focus of the project is explainability.
 
-## Initial Solution Direction
+Instead of providing only a numerical risk score, the system is intended to explain the factors responsible for the score using SHAP-based explanations.
 
-The initial concept consisted of the following stages:
+## Initial System Concept
+
+The initial workflow discussed by the team was:
 
 ```text
 GitHub Repository
+        ↓
+Dependency Collection
         ↓
 Dependency Analysis
         ↓
@@ -63,38 +66,84 @@ Risk Prioritization
 Developer Dashboard
 ```
 
-The machine-learning component was considered as a later stage rather than the starting point.
+The team decided that dependency collection and vulnerability detection should form the foundation of the system before introducing the ML component.
 
-The initial development philosophy was to first establish a reliable dependency and vulnerability pipeline and only then introduce machine learning.
+This approach allows the basic analysis pipeline to be verified before adding risk prediction.
+
+## Initial Technology Discussion
+
+The team discussed the major technologies that could be used for the project.
+
+The initial technology direction included:
+
+* GitHub API for repository information.
+* deps.dev for dependency information.
+* OSV.dev and other vulnerability databases for security information.
+* Python for data processing and analysis.
+* Machine-learning models for risk prioritization.
+* SHAP for explainability.
+* PostgreSQL for persistent storage.
+* FastAPI for backend services.
+* React for the frontend dashboard.
+
+These technologies were considered based on their suitability for the planned architecture and availability of existing APIs and libraries.
 
 ## Project Presentation
 
-A project presentation was prepared to communicate:
+After finalizing the idea, the team prepared a project PPT.
+
+The presentation was used to communicate:
 
 * The software supply-chain security problem.
-* Motivation for solving the problem.
+* Motivation behind the project.
+* Existing challenges in dependency management.
 * Proposed RiskTrace solution.
-* Core system workflow.
-* Machine-learning component.
+* Major system components.
+* Initial workflow.
+* Machine-learning approach.
 * Explainable AI component.
 * Proposed technology stack.
-* Expected project outcomes.
+* Expected outcomes.
 
-The PPT helped convert the initial idea into a more structured project proposal and also helped identify which parts of the system would require further investigation.
+The PPT helped the team organize the project idea and identify the components that required further investigation.
 
-## Key Observation
+## Key Design Decision
 
-A major observation during this stage was that the project should not treat machine learning as the entire solution.
+One of the important decisions made during this week was to treat **risk prioritization** as the main objective rather than limiting the project to vulnerability detection.
 
-The dependency collection and vulnerability matching stages are fundamental. If dependency information or vulnerability matching is incorrect, an ML model cannot produce a reliable risk assessment.
+The intended transformation was:
 
-Therefore, the project was planned as a layered system in which the basic security-analysis pipeline would be established before ML-based prioritization.
+```text
+Vulnerability Detection
+        ↓
+Risk Assessment
+        ↓
+Prioritization
+        ↓
+Explanation
+        ↓
+Developer Action
+```
+
+This became the central idea behind RiskTrace.
 
 ## Result
 
-The software supply-chain security problem was selected as the project problem domain and the project was named **RiskTrace**.
+By the end of Week 1, the team had:
 
-An initial project presentation was prepared and the broad system workflow was established.
+* Selected the software supply-chain security problem.
+* Finalized the RiskTrace project idea.
+* Defined the initial problem statement.
+* Established the initial system workflow.
+* Discussed the major technical components.
+* Prepared the initial project PPT.
 
-The next task was to investigate datasets and external security information sources that could support vulnerability analysis and risk modeling.
+The next step was to investigate suitable datasets and external security-information sources and use these findings to finalize the technical architecture.
+
+## Individual Contribution
+
+Each team member can add their own contribution below.
+
+**My contribution:**
+Participated in the problem-domain discussions, helped refine the RiskTrace idea and its objectives, contributed to the problem statement and workflow, and participated in preparing and reviewing the project PPT.
 
