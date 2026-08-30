@@ -1,82 +1,129 @@
-# Week 2 : Dataset Selection and Architecture Finalization
+# Week 2 : Dataset Selection, Architecture Finalization and Feature Identification
 
 ## Objective
 
-The objective of this week was to investigate suitable datasets and security information sources for RiskTrace and use the findings to finalize the system architecture and risk features.
+The objective of Week 2 was to investigate suitable datasets and external information sources for RiskTrace and use the findings to finalize the system architecture, risk features, and machine-learning technology stack.
 
-## Dataset Investigation
+The team focused on determining what information would be required at each stage of the dependency-risk analysis pipeline.
 
-After finalizing the problem statement, the next challenge was identifying data that could support the proposed vulnerability analysis and machine-learning component.
+---
 
-Two important publicly available datasets were investigated.
+## 1. Dataset Investigation
 
-### 1. OSS Vulnerabilities Dataset
+After finalizing the project idea, the team investigated publicly available datasets that could support vulnerability analysis and the future machine-learning component.
 
-The first dataset considered was the **OSS Vulnerabilities** dataset available on Kaggle.
+Two important datasets were considered.
 
-The dataset contains vulnerabilities identified in open-source software and reported to the National Vulnerability Database (NVD). It includes vulnerability-related information such as CVE and CWE identifiers and descriptions.
+### OSS Vulnerabilities Dataset
 
-Dataset reference:
+The team investigated the **OSS Vulnerabilities** dataset available on Kaggle.
+
+The dataset provides vulnerability-related information for open-source software and contains information associated with vulnerabilities reported through sources such as the National Vulnerability Database.
+
+Reference:
 
 https://www.kaggle.com/datasets/japkeeratsingh/oss-vulnerabilities/data
 
-This dataset was considered useful for obtaining structured vulnerability information and developing vulnerability-related features.
+The dataset was considered useful for understanding vulnerability records and creating structured vulnerability-related information for the project.
 
-### 2. DataDog Malicious Software Packages Dataset
+### DataDog Malicious Software Packages Dataset
 
-The second major dataset investigated was the **DataDog Malicious Software Packages Dataset**.
+The team also investigated the **DataDog Malicious Software Packages Dataset**.
 
-The repository contains more than 28,000 malicious software packages identified as part of DataDog's software supply-chain security research. The dataset currently covers ecosystems including npm and PyPI, along with IDE extensions and AI Skills. DataDog states that the included packages have been manually triaged by humans.
+The dataset contains manually vetted malicious software packages and is intended to support research and analysis related to software supply-chain security.
 
 Reference:
 
 https://github.com/DataDog/malicious-software-packages-dataset
 
-The dataset was considered useful for studying malicious-package behavior and for broadening the security data used by the project.
+The dataset was considered useful for broadening the security perspective beyond conventional CVE-based vulnerability records and for investigating malicious-package behavior.
 
 ## Dataset Limitation
 
-An important observation was that no single dataset completely represents the dependency-risk problem.
+During the dataset investigation, the team identified that a single static dataset would not provide all the information required by RiskTrace.
 
-The project needs information about:
+The proposed system requires information about:
 
-* Known vulnerabilities.
-* Affected package versions.
+* Package versions.
 * Dependency relationships.
-* Dependency depth.
+* Direct and transitive dependencies.
+* Vulnerability records.
+* Vulnerable version ranges.
+* Fixed versions.
+* Vulnerability severity.
 * Package maintenance.
 * Repository health.
-* Malicious-package indicators.
 
-Therefore, datasets alone would not be sufficient.
+Therefore, the team decided to combine static datasets with information obtained from external APIs and security databases.
 
-The final design would need to combine datasets with live or structured security information from external services.
+---
 
-## External Data Sources
+# 2. External Data Sources
 
-The proposed architecture therefore included multiple sources.
+The team investigated several external sources that could provide live or structured dependency and security information.
 
-### OSV.dev
+## GitHub API
 
-OSV.dev was selected as a major vulnerability-matching source.
+The GitHub REST API was selected for repository integration.
 
-Its API supports querying vulnerabilities for a specific package and version, as well as batch vulnerability queries.
+It can provide information such as:
 
-This makes it suitable for checking whether a dependency version identified from a repository has known vulnerabilities.
+* Repository metadata.
+* Repository contents.
+* Dependency-related files.
+* Source-code information.
+* Commit and activity information.
 
-### deps.dev
+The repository provided by the user would therefore act as the starting point for the RiskTrace analysis.
 
-deps.dev was selected for dependency and package metadata.
+## deps.dev
 
-The deps.dev API provides information about package versions, dependency relationships, projects, advisories, and related package information. It also aggregates data from package registries and project sources and includes OpenSSF Scorecard information.
+deps.dev was selected as an important dependency-information source.
 
-This makes it useful for obtaining information beyond the vulnerability itself.
+It can provide package and project information and help resolve dependency relationships.
 
-## Architecture Finalization
+The team planned to use it for:
 
-Based on the dataset and API investigation, the system architecture was refined and finalized as a pipeline rather than a single ML application.
+* Dependency graph information.
+* Package-version information.
+* Direct/transitive dependency analysis.
+* Project-related information.
 
-The final conceptual flow became:
+## OpenSSF Scorecard
+
+OpenSSF Scorecard information was considered as an additional source of repository/project health indicators.
+
+These indicators can provide information that may be useful when assessing the overall health and maintenance characteristics of a dependency.
+
+## OSV.dev
+
+OSV.dev was selected as the primary vulnerability-matching source.
+
+The planned workflow is to query vulnerability information for identified package versions.
+
+The system can use the returned information to identify:
+
+* Vulnerability identifiers.
+* Affected versions.
+* Fixed versions.
+* Severity information.
+* Related security metadata.
+
+## GitHub Advisory Database and NVD
+
+The team also retained the GitHub Advisory Database and NVD as additional vulnerability-information sources.
+
+These sources can be used where additional vulnerability information or enrichment is required.
+
+This resulted in a multi-source security-information strategy instead of depending on a single vulnerability database.
+
+---
+
+# 3. Architecture Finalization
+
+Based on the dataset and API investigation, the initial architecture was expanded and finalized.
+
+The final system flow became:
 
 ```text
 GitHub Repository
@@ -87,7 +134,7 @@ Dependency Collection
 Direct + Transitive Dependency Analysis
         ↓
 Vulnerability Matching
-(OSV.dev + GitHub Advisory / NVD where needed)
+(OSV.dev + GitHub Advisory / NVD where required)
         ↓
 Risk Feature Engineering
         ↓
@@ -104,142 +151,276 @@ React + Tailwind Dashboard
 Risk Score + Reasons + Recommendations
 ```
 
-## Dependency Collection
+The architecture was divided into separate logical stages so that each stage could be developed and tested independently.
 
-The first stage of the architecture receives a GitHub repository from the user.
+---
 
-The system is intended to identify both:
+# 4. Dependency Collection and Resolution
 
-* Direct dependencies.
-* Transitive dependencies.
+The first stage of the finalized architecture is repository ingestion.
 
-The use of deps.dev was planned to help obtain dependency relationships and package metadata. The GitHub API was included for repository integration and repository-level information.
+The user provides a GitHub repository to RiskTrace.
 
-## Vulnerability Matching
+The system is planned to collect:
 
-After dependencies are identified, each dependency and relevant version is checked against vulnerability information.
+* Repository metadata.
+* Dependency manifests.
+* Package names.
+* Package versions.
+* Ecosystem information.
 
-The primary planned source is OSV.dev.
+The Dependency Resolver then identifies both:
 
-GitHub Advisory Database and NVD were retained as additional sources where required.
+**Direct dependencies**
 
-This multi-source approach was selected because relying on one vulnerability source could result in incomplete coverage.
+and
 
-## Risk Feature Engineering
+**Transitive dependencies**
 
-The project was expanded beyond simple vulnerability severity.
+The dependency graph is also used to calculate dependency depth.
+
+This information becomes important later during risk feature engineering.
+
+---
+
+# 5. Vulnerability Matching
+
+After dependencies are resolved, the dependency information is passed to the vulnerability-matching stage.
+
+The team decided to primarily use OSV.dev for package-version vulnerability lookups.
+
+Additional information may be obtained from:
+
+* GitHub Advisory Database.
+* NVD.
+
+The matching stage is intended to normalize vulnerability information so that different vulnerability identifiers and records can be associated with the correct dependency.
+
+The expected information includes:
+
+* CVE.
+* GHSA.
+* CWE where available.
+* CVSS/severity.
+* Affected versions.
+* Fixed versions.
+
+---
+
+# 6. Risk Feature Identification
+
+The team decided that the ML model should not rely only on vulnerability severity.
+
+A broader set of risk features was therefore identified.
 
 The planned features include:
 
-* Vulnerability presence.
-* Vulnerability severity.
-* Number of vulnerabilities.
+### Vulnerability Features
+
+* Number of known vulnerabilities.
+* Maximum vulnerability severity/CVSS.
+* Vulnerability-related indicators.
+
+### Dependency Features
+
+* Direct/transitive status.
 * Dependency depth.
-* Direct/transitive dependency status.
-* Package staleness.
-* Maintenance activity.
-* Repository health.
-* OpenSSF Scorecard-related health indicators.
-* Other package-level security indicators where available.
+* Package ecosystem.
+* Version information.
 
-The purpose of these features is to provide the ML model with more context than a raw CVSS or vulnerability severity value.
+### Package Freshness
 
-## ML Stack
+* Package age.
+* Staleness indicators.
 
-The machine-learning stack was finalized as:
+### Maintenance
 
-**Primary model:**
+* Maintenance/activity indicators.
+* Recent repository activity where available.
 
-* XGBoost
+### Repository Health
 
-**Comparison models:**
+* OpenSSF Scorecard/project-health indicators.
+* Repository-level health information.
 
-* Random Forest
-* Logistic Regression
+### Code Complexity
 
-**Preprocessing:**
+Source-code complexity was considered as an additional feature.
 
-* scikit-learn
+Lizard was considered for obtaining complexity-related information where applicable.
 
-**Data processing:**
+These features were selected to provide a broader representation of dependency risk.
 
-* Pandas
-* NumPy
+---
 
-XGBoost was selected as the primary model because the proposed feature set is primarily structured/tabular data and may contain nonlinear relationships between dependency characteristics and risk.
+# 7. ML Stack Finalization
 
-The comparison models will provide baselines for evaluating whether the additional complexity of XGBoost provides useful improvement.
+The machine-learning stack was also finalized during this stage.
 
-## Explainability
+## Primary Model
 
-SHAP was selected as the explainability layer.
+**XGBoost**
 
-The objective is not only to output a numerical risk score but also to identify the features that contributed to the prediction.
+XGBoost was selected as the primary risk-prioritization model.
 
-For example, a high-risk dependency could potentially receive a high score because of a combination of:
+## Comparison Models
 
-* High vulnerability severity.
-* Multiple known vulnerabilities.
-* Large dependency depth.
-* Outdated package information.
-* Poor maintenance indicators.
+Two additional models were selected for comparison:
 
-The final explanation should allow a developer to understand the factors behind the prioritization.
+* Random Forest.
+* Logistic Regression.
 
-## Storage
+The comparison will help determine whether XGBoost provides meaningful improvement over alternative models.
 
-PostgreSQL was selected as the database layer.
+## Data Processing
 
-The planned database will store information such as:
+The planned data-processing stack is:
 
-* Repository information.
-* Dependency records.
-* Dependency relationships.
-* Vulnerability records.
-* Risk features.
-* Model predictions.
-* SHAP explanations.
-* Scan results.
+* Pandas.
+* NumPy.
 
-## Additional Features
+## Preprocessing
 
-The architecture was also expanded to include developer-oriented output rather than only raw analysis.
+Scikit-learn will be used for preprocessing and model evaluation.
 
-The dashboard is intended to provide:
+---
 
-* Overall repository risk.
-* Dependency-level risk scores.
-* Vulnerability details.
-* Risk explanations.
-* Priority ranking.
-* Recommended actions.
-* Historical scan information in later iterations.
+# 8. Explainability
 
-## Key Observation
+The team decided to use **SHAP** for explainability.
 
-The dataset investigation changed the architecture from a simple vulnerability scanner into a multi-stage risk-analysis system.
+The purpose is to explain the contribution of individual risk features to a model prediction.
 
-The project therefore became:
+The intended workflow is:
 
 ```text
-Data Collection
-      +
-Dependency Analysis
-      +
-Vulnerability Intelligence
-      +
-Feature Engineering
-      +
-Machine Learning
-      +
-Explainable AI
-      +
-Developer Dashboard
+Risk Features
+      ↓
+XGBoost
+      ↓
+Risk Score
+      ↓
+SHAP
+      ↓
+Feature Contributions
+      ↓
+Human-Readable Reasons
 ```
 
-## Result
+This ensures that RiskTrace does not simply output a risk number.
 
-The primary datasets and external information sources were identified, and the final high-level architecture and ML stack were established.
+Instead, the developer should be able to understand the factors that contributed to the ranking.
 
-The next step was to consolidate these decisions into the formal project proposal.
+---
+
+# 9. Database and Application Architecture
+
+PostgreSQL was finalized as the database layer.
+
+The database is planned to store:
+
+* Repository information.
+* Dependency information.
+* Dependency relationships.
+* Vulnerabilities.
+* Risk features.
+* Scan metadata.
+* Risk scores.
+* Model information.
+* SHAP explanations.
+
+The application layer was divided into:
+
+### Backend
+
+**FastAPI**
+
+Responsible for analysis orchestration, API communication, ML inference, and database interaction.
+
+### Frontend
+
+**React + Tailwind CSS**
+
+Responsible for presenting:
+
+* Repository risk.
+* Dependency rankings.
+* Vulnerability information.
+* Risk scores.
+* SHAP explanations.
+* Recommendations.
+
+---
+
+# 10. Additional Features Discussed
+
+During the architecture discussions, the team also identified features that could improve the practical usefulness of RiskTrace.
+
+These included:
+
+* Dependency-risk ranking.
+* Vulnerability details.
+* Risk explanations.
+* Upgrade recommendations.
+* Repository scan history.
+* Filtering and sorting of dependencies.
+* Trend visualization for repeated scans.
+
+The core functionality was prioritized first, while some dashboard enhancements were kept as later deliverables.
+
+---
+
+
+# Key Design Decision
+
+A major decision made during Week 2 was to treat RiskTrace as a **multi-stage dependency intelligence and risk-prioritization pipeline** rather than a simple vulnerability scanner.
+
+The final conceptual flow was:
+
+```text
+Repository
+    ↓
+Dependency Intelligence
+    ↓
+Security Intelligence
+    ↓
+Risk Features
+    ↓
+ML Prioritization
+    ↓
+Explainability
+    ↓
+Developer Decision Support
+```
+
+This architecture allows the project to gradually progress from basic dependency analysis to ML-based risk prioritization without making the ML model responsible for the entire security-analysis process.
+
+---
+
+# Result
+
+By the end of Week 2, the team had:
+
+* Investigated the OSS Vulnerabilities dataset.
+* Investigated the DataDog malicious software packages dataset.
+* Identified GitHub API and deps.dev as dependency-information sources.
+* Selected OSV.dev as the primary vulnerability-matching source.
+* Retained GitHub Advisory Database and NVD for additional vulnerability information.
+* Identified OpenSSF Scorecard-related health indicators.
+* Finalized direct and transitive dependency analysis.
+* Identified the major risk features.
+* Finalized XGBoost as the primary ML model.
+* Selected Random Forest and Logistic Regression for comparison.
+* Selected SHAP for explainability.
+* Finalized PostgreSQL, FastAPI, React, and Tailwind CSS for the application architecture.
+* Discussed additional features such as recommendations, history, filtering, and trend analysis.
+
+The finalized architecture provided the technical foundation for preparing the formal project proposal in the following week.
+
+## Individual Contribution
+
+Each team member can add their own contribution below.
+
+**My contribution:**
+Participated in dataset investigation and comparison, contributed to discussions on dependency and vulnerability data sources, helped finalize the architecture and risk features, and participated in discussions regarding the ML, explainability, database, backend, and frontend components.
 
