@@ -225,7 +225,3 @@ The UML design provided a clearer blueprint for the implementation phase.
 **My contribution:**
 Worked on the **RiskTrace Use-Case Diagram**, identifying the primary actor, external systems, and major interactions supported by the platform. I mapped the Developer's interactions with RiskTrace, including repository analysis, dependency resolution, vulnerability matching, risk prediction, viewing the prioritized dashboard, inspecting CVE details, viewing SHAP explanations, receiving remediation advice, and re-running repository scans. I also incorporated the interactions with the GitHub REST API, deps.dev/Scorecard, and OSV/Advisory/NVD as external systems.
 
-### Other Team Members
-
-Other team members can replace the above section with their own contribution, such as work on the **Technical UML Architecture** or **Level-1 Data-Flow Diagram**, depending on the diagram they worked on.
-
