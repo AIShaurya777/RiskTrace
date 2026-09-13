@@ -14,12 +14,24 @@ RiskTrace is a supply chain risk analysis tool for open-source software dependen
 
 ```
 RiskTrace/
-├── code/              # Application source code (backend + frontend)
+├── .github/
+│   └── workflows/
+│       └── deploy-pages.yml        # GitHub Pages deployment workflow
+├── code/
+│   ├── backend/                    # Node.js + Prisma + PostgreSQL API
+│   ├── frontend/                   # React + Vite + Tailwind UI
+│   ├── docker-compose.yml          # Multi-container Docker setup
+│   ├── .env.example
+│   └── README.md                   # Code-specific setup instructions
 ├── docs/
-│   ├── proposal/      # Project proposal documents
-│   └── uml-diagrams/  # Architecture, use case, and data flow diagrams
-├── journals/          # Individual contribution logs for each team member
-└── idea-pitch-ppt.pdf # Project pitch presentation
+│   ├── diagrams/                   # UML & architecture diagrams (activity, architecture, data-flow, ER, use-case)
+│   ├── gantt-chart-risktrace.xlsx  # Project Gantt chart
+│   └── idea-pitch-ppt.pdf         # Project pitch presentation
+├── github-pages/                   # GitHub Pages project website (HTML/CSS/JS)
+├── journals/                       # Individual contribution logs per team member
+├── proposal/                       # Project proposal (LaTeX + PDF)
+├── prototype/                      # Prototype report
+└── README.md
 ```
 
 ## Datasets
