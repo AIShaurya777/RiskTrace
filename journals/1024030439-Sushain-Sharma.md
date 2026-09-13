@@ -41,7 +41,7 @@ The proposal was revised based on the teacher's suggestions and converted into a
 
 We worked on documenting the system design through UML diagrams to clearly represent the data flow and system interactions.
 
-- Created the Level 0 and Level 1 Data Flow diagrams showing the high-level system context and the primary process decomposition
+- Created the Data Flow diagrams showing the high-level system context and the primary process decomposition
 
 ---
 
