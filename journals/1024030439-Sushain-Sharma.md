@@ -50,3 +50,11 @@ We worked on documenting the system design through UML diagrams to clearly repre
 The transition from design to development began this week. Remaining documentation was also cleaned up.
 
 - Made edits and corrections to the UML diagrams based on review feedback along with Shaurya
+
+---
+
+## Week 7 - Implementation and Documentation
+
+Phase 6 of the project focused on completing the remaining documentation artifacts and implementation tasks.
+
+- Implemented the project Gantt chart and milestone tracking along with Abhishek and Shaurya
