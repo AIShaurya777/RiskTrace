@@ -51,3 +51,15 @@ Formal system design documentation was created through UML diagrams to represent
 Implementation of the core application began this week. The focus was on getting a working end-to-end prototype up and running.
 
 - Developed the initial full-stack MVP covering both the backend API (dependency parsing, risk scoring, vulnerability matching) and the frontend interface (scan form, results display, dashboard)
+
+---
+
+## Week 7 - Implementation and Documentation
+
+Phase 6 of the project focused on completing the remaining documentation artifacts and advancing the implementation.
+
+- Created the ER Diagram to formally document the database schema and entity relationships
+- Prepared the project report summarizing the work done, methodology, and results
+- Restructured the repository structure along with Shaurya to better organize the codebase and documentation
+- Built the initial full-stack MVP covering backend and frontend integration
+- Implemented the project Gantt chart and milestone tracking along with Shaurya and Sushain

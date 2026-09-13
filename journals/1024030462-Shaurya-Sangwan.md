@@ -55,3 +55,15 @@ Development work began this week alongside some remaining documentation tasks.
 
 - Made edits and corrections to the UML diagrams based on review feedback along with Sushain
 - Implemented the Gantt chart to outline the project timeline and milestone tracking
+
+---
+
+## Week 7 - Implementation and Documentation
+
+Phase 6 of the project focused on completing the remaining documentation artifacts and pushing forward with implementation work.
+
+- Created the Activity Diagram to model the system's workflow and control flow across key operations
+- Created the prototype presentation (PPT) to demonstrate the project's current progress and planned features
+- Restructured the repository structure along with Abhishek to better organize the codebase and documentation
+- Updated the GitHub Pages site to reflect the latest project information, architecture, and team details
+- Implemented the project Gantt chart and milestone tracking along with Abhishek and Sushain
